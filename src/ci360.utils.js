@@ -28,7 +28,9 @@ const get360ViewProps = (image) => ({
   stopAtEdges: isTrue(image, 'stop-at-edges'),
   entryImage: parseInt(attr(image, 'entryimage') || attr(image, 'data-entryimage') || 1, 10),
   loadCookie: isTrue(image, 'load-cookie'),
-  saveCookie: isTrue(image, 'save-cookie')
+  saveCookie: isTrue(image, 'save-cookie'),
+  shouldAdd360ViewIcon: isTrue(image),
+  dragIconFadeDelay: parseInt(attr(image, 'data-drag-icon-fade-delay') || 2000, 10)
 });
 
 const isTrue = (image, type) => {
@@ -145,7 +147,7 @@ const setCloseFullScreenViewStyles = (closeFullScreenIcon) => {
   closeFullScreenIcon.style.background = `url('https://scaleflex.ultrafast.io/https://scaleflex.airstore.io/filerobot/js-cloudimage-360-view/cross.svg') 50% 50% / cover no-repeat`;
 };
 
-const magnify = (container, src, glass, zoom) => {
+const magnify = (container, src, glass, zoom, delay, event) => {
   let w, h, bw;
   glass.setAttribute("class", "img-magnifier-glass");
   container.prepend(glass);
@@ -156,16 +158,30 @@ const magnify = (container, src, glass, zoom) => {
   glass.style.backgroundSize = (container.offsetWidth * zoom) + "px " + (container.offsetHeight * zoom) + "px";
   glass.style.position = 'absolute';
   glass.style.border = '3px solid #000';
-  glass.style.borderRadius = '50%';
+  glass.style.borderRadius = '12px';
   glass.style.cursor = 'wait';
   glass.style.lineHeight = '200px';
   glass.style.textAlign = 'center';
   glass.style.zIndex = '1000';
 
-  glass.style.width = '250px';
-  glass.style.height = '250px';
+  glass.style.width = '500px';
+  glass.style.height = '320px';
   glass.style.top = '-75px';
   glass.style.right = '-85px';
+
+  let icon = document.createElement('DIV');
+  icon.style.display = 'block';
+  icon.style.width = '100%';
+  icon.style.height = '100%';
+  icon.classList.add("magnify-icon");
+
+  setTimeout(
+      function Remove() {
+        icon.classList.add("hide-icon");
+      },
+      delay );
+
+  glass.appendChild(icon);
 
   bw = 3;
   w = glass.offsetWidth / 2;
@@ -219,6 +235,8 @@ const magnify = (container, src, glass, zoom) => {
 
     return { x, y };
   }
+
+  moveMagnifier(event);
 };
 
 const getSizeLimit = (currentSize) => {

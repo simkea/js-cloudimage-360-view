@@ -35,7 +35,17 @@ class CI360Viewer {
     this.devicePixelRatio = Math.round(window.devicePixelRatio || 1);
     this.isMobile = !!('ontouchstart' in window || navigator.msMaxTouchPoints);
     this.id = container.id;
+    this.shouldAdd360ViewIcon = 1;
+    this.dragIconFadeDelay = 2000;
     this.init(container);
+  }
+
+  doubleclick(event) {
+    event.preventDefault();
+
+    if (!this.imagesLoaded) return;
+
+    this.magnify(event);
   }
 
   mousedown(event) {
@@ -343,7 +353,9 @@ class CI360Viewer {
   }
 
   onFirstImageLoaded(event) {
-    this.add360ViewIcon();
+    if(this.shouldAdd360ViewIcon) {
+      this.add360ViewIcon();
+    }
 
     if (this.fullScreenView) {
       this.canvas.width = window.innerWidth * this.devicePixelRatio;
@@ -468,7 +480,7 @@ class CI360Viewer {
     return lastIndex > 10 ? currentImage.src.slice(lastIndex) : currentImage.src;
   }
 
-  magnify() {
+  magnify(event) {
     const image = new Image();
     const src = this.getOriginalSrc();
 
@@ -481,7 +493,7 @@ class CI360Viewer {
 
     this.glass = document.createElement('div');
     this.container.style.overflow = 'hidden';
-    magnify(this.container, src, this.glass, this.magnifier || 3);
+    magnify(this.container, src, this.glass, this.magnifier || 3,this.dragIconFadeDelay, event);
   }
 
   closeMagnifier() {
@@ -785,6 +797,8 @@ class CI360Viewer {
     } else {
       document.addEventListener('keydown', this.keydownGeneral.bind(this));
     }
+
+    this.container.addEventListener('dblclick', this.doubleclick.bind(this));
   }
 
   applyStylesToContainer() {
@@ -799,7 +813,7 @@ class CI360Viewer {
     let {
       folder, filename, imageList, indexZeroBase, amount, draggable = true, swipeable = true, keys, bottomCircle, bottomCircleOffset, boxShadow,
       autoplay, speed, autoplayReverse, fullScreen, magnifier, ratio, responsive, ciToken, ciSize, ciOperation,
-      ciFilters, lazyload, lazySelector, spinReverse, dragSpeed, stopAtEdges, controlReverse, entryImage, loadCookie, saveCookie
+      ciFilters, lazyload, lazySelector, spinReverse, dragSpeed, stopAtEdges, controlReverse, entryImage, loadCookie, saveCookie, shouldAdd360ViewIcon, dragIconFadeDelay
     } = get360ViewProps(container);
     const ciParams = { ciSize, ciToken, ciOperation, ciFilters };
 
@@ -826,6 +840,8 @@ class CI360Viewer {
     this.dragSpeed = dragSpeed;
     this.autoplaySpeed = this.speed * 36 / this.amount;
     this.stopAtEdges = stopAtEdges;
+    this.shouldAdd360ViewIcon = shouldAdd360ViewIcon;
+    this.dragIconFadeDelay = dragIconFadeDelay;
     this.entryImage = entryImage;
     this.saveCookie = saveCookie;
     if(loadCookie){
