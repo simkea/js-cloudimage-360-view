@@ -419,7 +419,7 @@ class CI360Viewer {
     }
   }
 
-  onImageLoad(event) {
+  onImageLoad(index, event) {
     const percentage = Math.round(this.loadedImages / this.amount * 100);
 
     this.loadedImages += 1;
@@ -427,7 +427,7 @@ class CI360Viewer {
 
     if (this.loadedImages === this.amount) {
       this.onAllImagesLoaded(event);
-    } else if (this.loadedImages === 1) {
+    } else if (index === 0) {
       this.onFirstImageLoaded(event);
     }
   }
@@ -642,11 +642,11 @@ class CI360Viewer {
           const images = JSON.parse(this.imageList);
 
           this.amount = images.length;
-          images.forEach(src => {
+          images.forEach((src, index) => {
             const folder = /(http(s?)):\/\//gi.test(src) ? '' : this.folder;
             const resultSrc = this.getSrc(responsive, container, folder, src, ciParams);
 
-            this.addImage(resultSrc, lazyload, lazySelector);
+            this.addImage(resultSrc, lazyload, lazySelector, index);
           });
         } catch (error) {
           console.error(`Wrong format in image-list attribute: ${error.message}`);
@@ -675,15 +675,14 @@ class CI360Viewer {
         image.style.position = 'absolute';
         image.style.top = '0';
         image.style.left = '0';
-        image.style.left = '0';
         this.innerBox.appendChild(image);
       }
     } else {
       image.src = resultSrc;
     }
 
-    image.onload = this.onImageLoad.bind(this);
-    image.onerror = this.onImageLoad.bind(this);
+    image.onload = this.onImageLoad.bind(this, index);
+    image.onerror = this.onImageLoad.bind(this, index);
     this.images.push(image);
   }
 
