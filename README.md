@@ -179,6 +179,18 @@ Your images folder on server.
 
 The filename pattern for your 360 image.  Must include {index}, which the library will replace with a number between 1 and [data-amount](#data-amount).
 
+### data-glass-folder (or glass-folder)
+
+###### Type: **String(url)** | _optional_
+
+Your images folder on server for zoom images.
+
+### data-glass-filename (or glass-filename)
+
+###### Type: **String** | Default: **image-high-{index}.jpg** | _optional_
+
+The filename pattern for your 360 zoom image.  Must include {index}, which the library will replace with a number between 1 and [data-amount](#data-amount).
+
 ### <a name="data-amount"></a> data-amount (or amount)
 
 ###### Type: **Number** | Default: **36** | _optional_

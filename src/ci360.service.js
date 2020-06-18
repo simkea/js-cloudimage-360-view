@@ -427,7 +427,7 @@ class CI360Viewer {
 
     if (this.loadedImages === this.amount) {
       this.onAllImagesLoaded(event);
-    } else if (index === 0) {
+    } else if (this.loadedImages === 1) {
       this.onFirstImageLoaded(event);
     }
   }
@@ -480,10 +480,19 @@ class CI360Viewer {
     return lastIndex > 10 ? currentImage.src.slice(lastIndex) : currentImage.src;
   }
 
+  getGlassSrc() {
+    if (this.glassFilename !== '' && this.entryImage) {
+      const shft = this.activeImage + this.entryImage;
+      const currentIndex = shft > this.loadedImages ? shft - this.loadedImages : shft;
+      const filename = this.glassFilename.replace('{index}', currentIndex);
+      return `${this.glassFolder}${filename}`;
+    }
+    return this.getOriginalSrc();
+  }
+
   magnify(event) {
     const image = new Image();
-    const src = this.getOriginalSrc();
-
+    const src = this.getGlassSrc();
     image.src = src;
     image.onload = () => {
       if (this.glass) {
@@ -810,7 +819,7 @@ class CI360Viewer {
 
   init(container) {
     let {
-      folder, filename, imageList, indexZeroBase, amount, draggable = true, swipeable = true, keys, bottomCircle, bottomCircleOffset, boxShadow,
+      folder, glassFolder, filename, glassFilename, imageList, indexZeroBase, amount, draggable = true, swipeable = true, keys, bottomCircle, bottomCircleOffset, boxShadow,
       autoplay, speed, autoplayReverse, fullScreen, magnifier, ratio, responsive, ciToken, ciSize, ciOperation,
       ciFilters, lazyload, lazySelector, spinReverse, dragSpeed, stopAtEdges, controlReverse, entryImage, loadCookie, saveCookie, shouldAdd360ViewIcon, dragIconFadeDelay
     } = get360ViewProps(container);
@@ -820,7 +829,9 @@ class CI360Viewer {
     this.addLoader();
 
     this.folder = folder;
+    this.glassFolder = glassFolder || this.folder;
     this.filename = filename;
+    this.glassFilename = glassFilename;
     this.imageList = imageList;
     this.indexZeroBase = indexZeroBase;
     this.amount = amount;

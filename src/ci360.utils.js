@@ -1,6 +1,8 @@
 const get360ViewProps = (image) => ({
   folder: attr(image, 'folder') || attr(image, 'data-folder') || '/',
+  glassFolder: attr(image, 'glass-folder') || attr(image, 'data-glass-folder') || false,
   filename: attr(image, 'filename') || attr(image, 'data-filename') || 'image-{index}.jpg',
+  glassFilename: attr(image, 'glass-filename') || attr(image, 'data-glass-filename') || '',
   imageList: attr(image, 'image-list') || attr(image, 'data-image-list') || null,
   indexZeroBase: parseInt(attr(image, 'index-zero-base') || attr(image, 'data-index-zero-base') || 0, 10),
   amount: parseInt(attr(image, 'amount') || attr(image, 'data-amount') || 36, 10),
@@ -151,7 +153,6 @@ const magnify = (container, src, glass, zoom, delay, event) => {
   let w, h, bw;
   glass.setAttribute("class", "img-magnifier-glass");
   container.prepend(glass);
-
   glass.style.backgroundColor = '#fff';
   glass.style.backgroundImage = "url('" + src + "')";
   glass.style.backgroundRepeat = "no-repeat";
@@ -164,8 +165,8 @@ const magnify = (container, src, glass, zoom, delay, event) => {
   glass.style.textAlign = 'center';
   glass.style.zIndex = '1000';
 
-  glass.style.width = '500px';
-  glass.style.height = '320px';
+  glass.style.width = '600px';
+  glass.style.height = '520px';
   glass.style.top = '-75px';
   glass.style.right = '-85px';
 
@@ -173,13 +174,13 @@ const magnify = (container, src, glass, zoom, delay, event) => {
   icon.style.display = 'block';
   icon.style.width = '100%';
   icon.style.height = '100%';
-  icon.classList.add("magnify-icon");
+  // icon.classList.add("magnify-icon");
 
-  setTimeout(
-      function Remove() {
-        icon.classList.add("hide-icon");
-      },
-      delay );
+  // setTimeout(
+  //     function Remove() {
+  //       icon.classList.add("hide-icon");
+  //     },
+  //     delay );
 
   glass.appendChild(icon);
 
